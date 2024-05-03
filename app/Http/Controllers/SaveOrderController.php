@@ -48,7 +48,7 @@ class SaveOrderController extends Controller
             return response()->json([
                 "success" => false,
                 "data" => [],
-            ]);
+            ],500);
         }
     }
     //
