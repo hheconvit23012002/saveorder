@@ -39,7 +39,7 @@ class SaveOrderController extends Controller
     public function getListOrder(Request $request){
         try {
             $user = $request->get('user');
-            $order = Order::with("orderDetail")->where('user_id', $user->id)->get();
+            $order = Order::with("orderDetail")->where('user_id', $user["id"])->get();
             return response()->json([
                 "success" => true,
                 "data" => $order
