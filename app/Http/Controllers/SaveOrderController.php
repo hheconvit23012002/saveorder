@@ -23,6 +23,8 @@ class SaveOrderController extends Controller
                     'price' => $each["price"],
                     'name_product' => $each["name_product"],
                     'image_product' => $each["image_product"],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             }
             OrderDetail::insert($orderDetail);
