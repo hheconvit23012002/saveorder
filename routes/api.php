@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SaveOrderController;
+use App\Http\Middleware\GetUserMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::get('/orders',[SaveOrderController::class,"getListOrder"])->middleware([
+    GetUserMiddleware::class
+]);
 
 Route::post('/saveOrder',[SaveOrderController::class,'saveOrder']);
