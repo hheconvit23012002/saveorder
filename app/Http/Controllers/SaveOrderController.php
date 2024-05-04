@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SaveOrderController extends Controller
@@ -52,6 +53,35 @@ class SaveOrderController extends Controller
                 "data" => [],
                 "message" => $e->getMessage()
             ],500);
+        }
+    }
+
+    public function getProductBuyMonth(){
+        try {
+            $firstDayOfMonth = Carbon::now()->firstOfMonth();
+            $endOfMonth = Carbon::now()->endOfMonth();
+            $orderByMonth = OrderDetail::whereBetween('created_at',[$firstDayOfMonth,$endOfMonth])
+                ->get();
+            $data = $orderByMonth->groupBy('product_id')
+                ->map(function ($byMonth){
+                    return [
+                        'product_id' => $byMonth->first()->product_id,
+                        'number' => $byMonth->sum('number'),
+                    ];
+                })
+                ->sortByDesc(function ($value){
+                    return $value['number'];
+                })
+                ->take(10)
+            ;
+            return response()->json($data);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => $e->getMessage(),
+            ]);
         }
     }
     //

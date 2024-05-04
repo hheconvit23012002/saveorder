@@ -25,3 +25,4 @@ Route::get('/orders',[SaveOrderController::class,"getListOrder"])->middleware([
 ]);
 
 Route::post('/saveOrder',[SaveOrderController::class,'saveOrder']);
+Route::get('/getProductBuyMonth',[SaveOrderController::class,'getProductBuyMonth']);
