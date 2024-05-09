@@ -91,20 +91,18 @@ class SaveOrderController extends Controller
                 ->get();
             $month = [];
             for ($i = 1; $i <= 12; $i++) {
-                $month[($i < 10 ? '0'.$i : $i) . "-" . now()->year] = (object)[
-                    "month" => ($i < 10 ? '0'.$i : $i) . "-" . now()->year,
-                    "number" => 0
-                ];
+                $month[($i < 10 ? '0'.$i : $i) . "-" . now()->year] = 0
             }
             $data = $order->groupBy(function ($order) {
                 return $order->created_at->format('m-Y');
             })->map(function ($orderByMonth) {
-                    $month = $orderByMonth->first()->created_at->format('m-Y');
-                    return (object)['month' => $month, 'count' => $orderByMonth->count()];
+                    return $orderByMonth->count();
                 })
                     ->toArray() + $month;
             ksort($data);
-            return response()->json($data);
+            return response()->json([
+                "data" => $data,
+            ]);
         }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
