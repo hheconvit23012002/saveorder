@@ -91,7 +91,7 @@ class SaveOrderController extends Controller
                 ->get();
             $month = [];
             for ($i = 1; $i <= 12; $i++) {
-                $month[($i < 10 ? '0'.$i : $i) . "-" . now()->year] = 0
+                $month[($i < 10 ? '0'.$i : $i) . "-" . now()->year] = 0;
             }
             $data = $order->groupBy(function ($order) {
                 return $order->created_at->format('m-Y');
