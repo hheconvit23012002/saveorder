@@ -101,7 +101,9 @@ class SaveOrderController extends Controller
             })->map(function ($orderByMonth) {
                     $month = $orderByMonth->first()->created_at->format('m-Y');
                     return (object)['month' => $month, 'count' => $orderByMonth->count()];
-                })->toArray() + $month;
+                })
+                    ->toArray() + $month;
+            ksort($data);
             return response()->json($data);
         }catch (\Exception $e) {
             return response()->json([
