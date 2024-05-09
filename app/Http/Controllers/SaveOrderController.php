@@ -87,7 +87,7 @@ class SaveOrderController extends Controller
     public function staticOrderInYear(){
         try {
             $year = date("Y");
-            $order = Order::where('created_at',$year)
+            $order = Order::whereYear('created_at',$year)
                 ->get();
             $month = [];
             for ($i = 1; $i <= 12; $i++) {
