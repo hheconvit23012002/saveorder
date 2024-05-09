@@ -111,5 +111,40 @@ class SaveOrderController extends Controller
             ]);
         }
     }
+
+    public function staticRevenueInYear(){
+        try {
+            $year = date("Y");
+            $order = Order::whereYear('created_at',$year)
+                ->get();
+            $month = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $month[($i < 10 ? '0'.$i : $i) . "-" . now()->year] = 0;
+            }
+            $data = $order->groupBy(function ($order) {
+                    return $order->created_at->format('m-Y');
+                })->map(function ($orderByMonth) {
+                    $totalSum = 0;
+                    foreach ($orderByMonth as $eachOrder){
+                        $sumMoney = $eachOrder->orderDetail->sum(function ($detail) {
+                            return $detail->price * $detail->number;
+                        });
+                        $totalSum += $sumMoney;
+                    }
+                    return $totalSum;
+                })
+                    ->toArray() + $month;
+            ksort($data);
+            return response()->json([
+                "data" => $data,
+            ]);
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
     //
 }
