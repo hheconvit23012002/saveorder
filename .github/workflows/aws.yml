@@ -1,4 +1,4 @@
-name: Deploy to EC
+name: Deploy to EC2
 
 on:
   push:
@@ -13,14 +13,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Migrate
-      run: php artisan migrate
-      working-directory: /var/www/html/saveorder
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
-    - name: Install package
-      run: composer update
-      working-directory: /var/www/html/saveorder
+    - name: Deploy to EC2
+      run: |
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          cd /var/www/html/saveorder
+          git pull origin main
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          php artisan migrate --force
+          php artisan optimize:clear
+        EOF
 
-    - name: Optimize
-      run: php artisan optimize:clear
-      working-directory: /var/www/html/saveorder
+    - name: Clear SSH key
+      run: rm ~/.ssh/id_rsa
