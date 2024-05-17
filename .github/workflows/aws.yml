@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Clear SSH key
-      run: rm ~/.ssh/id_rsa
     - name: migrate 
       run: php artisan migrate
     - name: install package
