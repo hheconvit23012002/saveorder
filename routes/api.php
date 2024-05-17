@@ -28,3 +28,4 @@ Route::post('/saveOrder',[SaveOrderController::class,'saveOrder']);
 Route::get('/getProductBuyMonth',[SaveOrderController::class,'getProductBuyMonth']);
 Route::get('/getOrderInYear',[SaveOrderController::class,'staticOrderInYear']);
 Route::get('/staticRevenueInYear',[SaveOrderController::class,'staticRevenueInYear']);
+////////
