@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to EC
 
 on:
   push:
@@ -22,13 +22,8 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-          cd /var/www/html/saveorder
-          git pull origin main
-          composer install --no-interaction --prefer-dist --optimize-autoloader
-          php artisan migrate --force
-          php artisan optimize:clear
-        EOF
+        rsync -avz --delete --exclude-from=".rsyncignore" -e "ssh -i ~/.ssh/id_rsa" ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/path/to/your/project
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} 'cd var/www/html/saveorder '
 
     - name: Clear SSH key
       run: rm ~/.ssh/id_rsa
