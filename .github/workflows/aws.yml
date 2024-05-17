@@ -12,11 +12,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: navigate
-      run: cd /var/www/html/saveorder
-    - name: migrate 
+
+    - name: Migrate
       run: php artisan migrate
-    - name: install package
+      working-directory: /var/www/html/saveorder
+
+    - name: Install package
       run: composer update
+      working-directory: /var/www/html/saveorder
+
     - name: Optimize
       run: php artisan optimize:clear
+      working-directory: /var/www/html/saveorder
